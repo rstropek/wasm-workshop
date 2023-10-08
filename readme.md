@@ -22,6 +22,8 @@ Note that for .NET, the [_wasm-tools_ workload](https://learn.microsoft.com/en-u
 
 Don't forget that there are [online alternatives to running WABT locally](https://webassembly.github.io/wabt/demo/)!
 
+**NOTE:** See the [GitHub Repository](https://github.com/rstropek/wasm-workshop/) for lots of sample code to be used in the workshop.
+
 ## How to Use
 
 - Start the container using Docker or a compatible container runtime: `docker run -it --rm -p 8080:8080 rstropek/wasm-workshop`
@@ -35,7 +37,7 @@ Don't forget that there are [online alternatives to running WABT locally](https:
   - [Error Lens](https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens)
 - Attach VSCode to the running container using the _Docker_ extension.
 
-  ![Attach VSCode to container](./attach.png)
+  ![Attach VSCode to container](https://github.com/rstropek/wasm-workshop/blob/main/attach.png?raw=true)
 
 ## Arguments
 
@@ -96,7 +98,7 @@ Goals: Make sure that you have the necessary tools (given if you use the Docker 
 
 #### Hello World (Online)
 
-![wat2wasm online](./wat2wasm-online.png)
+![wat2wasm online](https://github.com/rstropek/wasm-workshop/blob/main/wat2wasm-online.png?raw=true)
 
 #### Fibonacci
 
