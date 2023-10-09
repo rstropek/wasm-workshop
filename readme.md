@@ -1,3 +1,6 @@
+![GitHub Action Badge](https://github.com/rstropek/wasm-workshop/actions/workflows/build.yml/badge.svg)
+[![Docker Badge](https://img.shields.io/badge/Docker-rstropek%2Fwasm--workshop-blue)](https://hub.docker.com/repository/docker/rstropek/wasm-workshop/general)
+
 # Docker Image for WASM Workshop
 
 ## Image Content
