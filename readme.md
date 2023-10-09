@@ -13,11 +13,13 @@ This is a Docker image for exercises in a WASM workshop. It puts together the fo
 | _wget_, _curl_, _vim_                                                    | Just some useful tools                    |
 | [WebAssembly Binary Toolkit (WABT)](https://github.com/WebAssembly/wabt) | Contains useful tools like wat2wasm       |
 | [Wasmtime](https://wasmtime.dev/)                                        | A runtime for WebAssembly & WASI          |
+| [emscripten](https://emscripten.org/index.html)                          | Compiler toolchain to Wasm                |
 | [Rust](https://www.rust-lang.org/)                                       | Rust tools for Rust-related Wasm examples |
 | [Fermyon Spin](https://www.fermyon.com/spin)                             | Platform for serverless Wasm apps         |
 | [WASI SDK](https://github.com/WebAssembly/wasi-sdk)                      | WASI-enabled WebAssembly C/C++ toolchain  |
 | [.NET](https://dot.net)                                                  | .NET SDK for building _Blazor_ apps       |
 | [Just](https://github.com/casey/just)                                    | Useful command runner                     |
+| [http-server](https://www.npmjs.com/package/http-server)                 | Simple static HTTP server                 |
 
 Note that for Rust, the _wasm32-wasi_ target and [_wasm-pack_](https://rustwasm.github.io/wasm-pack/) are also installed.
 
@@ -79,9 +81,9 @@ wasmtime hello.wasm
 
 #### With Rust
 
-* `cargo new hello-wasm`
-* Look at _src/main.rs_
-* Compile and run:
+- `cargo new hello-wasm`
+- Look at _src/main.rs_
+- Compile and run:
 
   ```bash
   cargo build --target wasm32-wasi
@@ -92,10 +94,10 @@ wasmtime hello.wasm
 
 Goals: Make sure that you have the necessary tools (given if you use the Docker image), get familiar with compiling code to Wasm and running it outside of the browser with Wasmtime.
 
-* Choose C or Rust
-* Implement a program that prints all Fibonacci numbers up to 1000
-* Compile it to Wasm
-* Run it with Wasmtime
+- Choose C or Rust
+- Implement a program that prints all Fibonacci numbers up to 1000
+- Compile it to Wasm
+- Run it with Wasmtime
 
 ### Introduction to Wasm with WAT
 
@@ -112,18 +114,18 @@ Try this code in the [online WAT editor](https://webassembly.github.io/wabt/demo
   ;; The memory section declares a linear memory instance and initializes it with a given contents.
   ;; Memory is array-like and can be accessed with loads and stores.
   ;; Here, we allocate 1 page of memory, which is 64KiB.
-  (memory 1) 
+  (memory 1)
 
   ;; The export section makes WebAssembly functions and memory available for calling from JavaScript.
   ;; We're exporting the memory we defined above so we can manipulate it or read from it in JS.
   (export "memory" (memory 0))
 
   ;; The func section declares a list of functions in the module.
-  (func $fibonacci 
+  (func $fibonacci
     ;; Declaring the result type of the function.
     ;; Our fibonacci function returns an i32 (32-bit integer) with the number
     ;; of elements written to memory (address 0).
-    (result i32) 
+    (result i32)
 
     ;; Defining local variables which will be used in the function.
     ;; The local.get and local.set instructions allow for manipulating them.
@@ -135,15 +137,15 @@ Try this code in the [online WAT editor](https://webassembly.github.io/wabt/demo
     ;; Initializing our local variables.
     (local.set $i (i32.const 0))
     (local.set $j (i32.const 1))
-    (local.set $k (i32.const 0)) 
-    (local.set $limit (i32.const 100)) 
+    (local.set $k (i32.const 0))
+    (local.set $limit (i32.const 100))
 
     ;; Storing the first two Fibonacci numbers (0 and 1) in memory.
     (i32.store (local.get $k) (local.get $i))
     ;; Update $k to point to the next memory cell.
-    (local.set $k (i32.add (local.get $k) (i32.const 4))) 
+    (local.set $k (i32.add (local.get $k) (i32.const 4)))
     (i32.store (local.get $k) (local.get $j))
-    (local.set $k (i32.add (local.get $k) (i32.const 4))) 
+    (local.set $k (i32.add (local.get $k) (i32.const 4)))
 
     ;; Loop that calculates Fibonacci numbers and stores them in memory.
     (loop $loop1
@@ -154,25 +156,25 @@ Try this code in the [online WAT editor](https://webassembly.github.io/wabt/demo
       (if (i32.le_s (local.get $i) (local.get $limit))
         (then
           ;; If yes, store it in memory.
-          (i32.store (local.get $k) (local.get $i)) 
+          (i32.store (local.get $k) (local.get $i))
           ;; Update $k to point to the next memory cell.
-          (local.set $k (i32.add (local.get $k) (i32.const 4))) 
+          (local.set $k (i32.add (local.get $k) (i32.const 4)))
           ;; Update $j to hold the last computed Fibonacci number.
-          (local.set $j (local.get $i)) 
+          (local.set $j (local.get $i))
           ;; Continue loop from its beginning.
-          (br $loop1) 
+          (br $loop1)
         )
       )
     )
 
-    ;; At the end, we return how many Fibonacci numbers have been calculated 
-    ;; and stored in memory by dividing the memory pointer by 4 
+    ;; At the end, we return how many Fibonacci numbers have been calculated
+    ;; and stored in memory by dividing the memory pointer by 4
     ;; (since WebAssembly's i32 takes up 4 bytes of memory).
     (i32.div_u (local.get $k) (i32.const 4))
   )
 
   ;; Exporting the fibonacci function so it can be called from JavaScript.
-  (export "fibonacci" (func $fibonacci)) 
+  (export "fibonacci" (func $fibonacci))
 )
 ```
 
@@ -184,28 +186,102 @@ console.log(`We got ${len} numbers and here they are:`);
 const fibonacciNumbers = new Uint32Array(wasmInstance.exports.memory.buffer);
 
 // Extract Fibonacci numbers from memory and print them
-for(let i = 0; i < len; i++) {
+for (let i = 0; i < len; i++) {
   console.log(fibonacciNumbers[i]);
 }
 ```
 
 Exercises:
 
-* Store the WAT code locally and compile it with _wat2wasm_: `wat2wasm fib.wat`
-* Decompile the Wasm code with _wasm2wat_: `wasm2wat fib.wasm`
-* Decompile the Wasm code with _wasm2c_: `wasm2c fib.wasm`
-* Try running _wat-desugar_ on the WAT code: : `wat-desugar fib.wat`
-* Try running _wasm-stats_: `wasm-stats fib.wasm`
+- Store the WAT code locally and compile it with _wat2wasm_: `wat2wasm fib.wat`
+- Decompile the Wasm code with _wasm2wat_: `wasm2wat fib.wasm`
+- Decompile the Wasm code with _wasm2c_: `wasm2c fib.wasm`
+- Try running _wat-desugar_ on the WAT code: : `wat-desugar fib.wat`
+- Try running _wasm-stats_: `wasm-stats fib.wasm`
+
+#### Palindrome
+
+Palindrome checker writte with WAT, running in the browser. Sample code can be found [here](./palindrome).
 
 #### Diving Deeper into WAT
 
 [Introduction to WAT](https://github.com/rstropek/AdventOfCode2022/tree/main/Day01-wat) based on first day of _Advent of Code 2022_. See [justfile](https://github.com/rstropek/AdventOfCode2022/blob/main/Day01-wat/justfile) for commands. The sample contains hosts in
 
-* [Rust](https://github.com/rstropek/AdventOfCode2022/tree/main/Day01-wat/wasm-host-rs),
-* [JavaScript](https://github.com/rstropek/AdventOfCode2022/tree/main/Day01-wat/wasm-host-js) and
-* [.NET](https://github.com/rstropek/AdventOfCode2022/tree/main/Day01-wat/wasm-host-dotnet)
+- [Rust](https://github.com/rstropek/AdventOfCode2022/tree/main/Day01-wat/wasm-host-rs),
+- [JavaScript](https://github.com/rstropek/AdventOfCode2022/tree/main/Day01-wat/wasm-host-js) and
+- [.NET](https://github.com/rstropek/AdventOfCode2022/tree/main/Day01-wat/wasm-host-dotnet)
 
 Compare [Mini Rust sample](https://github.com/rstropek/AdventOfCode2022/tree/main/Day01-mini-rs) with [Full Rust sample](https://github.com/rstropek/AdventOfCode2022/tree/main/Day01-full-rs).
+
+### Emscripten
+
+Emscripten is a complete Open Source compiler toolchain to WebAssembly. Using Emscripten you can compile C and C++ code, or any other language that uses LLVM, into WebAssembly, and run it on the Web, Node.js, or other Wasm runtimes. Read more [here](https://emscripten.org/docs/introducing_emscripten/about_emscripten.html). The following examples uses [`cwrap`](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-ccall-cwrap).
+
+```bash
+mkdir emscripten
+cd emscripten
+mkdir test
+cd test
+```
+
+Create the file _hello_function.cpp_ in the _test_ folder:
+
+```cpp
+#include <math.h>
+
+extern "C" {
+  int int_sqrt(int x) {
+    return sqrt(x);
+  }
+
+  bool is_palindrome(char *text, int len) {
+    char *end = text + len - 1;
+    while (text < end) {
+      if (*text != *end) { return false; }
+      text++;
+      end--;
+    }
+
+    return true;
+  }
+}
+```
+
+```bash
+cd ..
+emcc test/hello_function.cpp -o function.js -sEXPORTED_FUNCTIONS=_int_sqrt,_is_palindrome -sEXPORTED_RUNTIME_METHODS=ccall,cwrap
+```
+
+Create the file _index.html_:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script src="function.js"></script>
+    <script>
+      Module.onRuntimeInitialized = () => {
+        int_sqrt = Module.cwrap("int_sqrt", "number", ["number"]);
+        console.log(int_sqrt(12));
+
+        is_palindrome = Module.cwrap("is_palindrome", "number", [
+          "string",
+          "number",
+        ]);
+        text = "otto";
+        console.log(is_palindrome(text, text.length));
+      };
+    </script>
+  </body>
+</html>
+```
+
+Run a local web server (`http-server`) and open the page in your browser.
 
 ### WASI
 
@@ -248,17 +324,17 @@ Microsoft offers [good tutorials for Blazor Wasm](https://learn.microsoft.com/en
 
 **Notes**:
 
-* You must run Blazor apps with `dotnet run --urls http://*:8080` to make them accessible from outside of the container.
-* Blazor caches the Wasm- and DLL-files after the first load of the app. If you want to demonstrate how Blazor Wasm uses .NET DLLs in the browser, do not forget to clear the _Cache storage_ using your browser's dev tools.
+- You must run Blazor apps with `dotnet run --urls http://*:8080` to make them accessible from outside of the container.
+- Blazor caches the Wasm- and DLL-files after the first load of the app. If you want to demonstrate how Blazor Wasm uses .NET DLLs in the browser, do not forget to clear the _Cache storage_ using your browser's dev tools.
 
 ### Fermyon Spin
 
 #### Hello World
 
-* Create a new _Spin_ application: `spin new http-rust hello_spin`
-* Build the application: `spin build`
-* Take a look at the generated code: `ls -la target/wasm32-wasi/release/`
-* Run the app: `spin up --listen [::]:8080` (this enables accessing the app from outside of the container)
+- Create a new _Spin_ application: `spin new http-rust hello_spin`
+- Build the application: `spin build`
+- Take a look at the generated code: `ls -la target/wasm32-wasi/release/`
+- Run the app: `spin up --listen [::]:8080` (this enables accessing the app from outside of the container)
 
 #### Larger Example
 

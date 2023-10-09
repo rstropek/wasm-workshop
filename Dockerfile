@@ -77,6 +77,14 @@ RUN apt remove nodejs npm -y \
     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$node_major.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
     && apt update \
-    && apt install nodejs -y
-ENV CCWASM /opt/wasi-sdk-$wasi_sdk.0/bin/clang --sysroot=/opt/wasi-sdk-$wasi_sdk.0/share/wasi-sysroot
+    && apt install nodejs -y \
+    && npm install --global http-server
 WORKDIR /root
+RUN git clone https://github.com/emscripten-core/emsdk.git \
+    && cd emsdk \
+    && ./emsdk install latest \
+    && ./emsdk activate latest \
+    && echo 'export PATH=$PATH:/root/emsdk:/root/emsdk/upstream/emscripten' >> ~/.bashrc \
+    && echo 'export EMSDK=/root/emsdk' >> ~/.bashrc \
+    && echo 'export EMSDK_NODE=/root/emsdk/node/16.20.0_64bit/bin/node' >> ~/.bashrc
+ENV CCWASM /opt/wasi-sdk-$wasi_sdk.0/bin/clang --sysroot=/opt/wasi-sdk-$wasi_sdk.0/share/wasi-sysroot
