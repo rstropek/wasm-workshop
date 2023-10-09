@@ -68,7 +68,9 @@ RUN wget https://packages.microsoft.com/config/ubuntu/$dotnet_repo/packages-micr
     && apt install dotnet-sdk-$dotnet_version -y \
     && cp -r /usr/share/dotnet/* /usr/lib/dotnet/ \
     && rm -rf /usr/share/dotnet \
-    && dotnet workload install wasm-tools
+    && dotnet workload install wasm-tools \
+    && dotnet workload install wasm-experimental \
+    && apt install libxml2
 RUN curl -sSf https://just.systems/install.sh | bash -s -- --to /opt/just \
     && echo 'export PATH=$PATH:/opt/just' >> ~/.bashrc
 RUN apt remove nodejs npm -y \

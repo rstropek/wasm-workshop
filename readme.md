@@ -23,7 +23,7 @@ This is a Docker image for exercises in a WASM workshop. It puts together the fo
 
 Note that for Rust, the _wasm32-wasi_ target and [_wasm-pack_](https://rustwasm.github.io/wasm-pack/) are also installed.
 
-Note that for .NET, the [_wasm-tools_ workload](https://learn.microsoft.com/en-us/aspnet/core/blazor/tooling?view=aspnetcore-7.0&pivots=linux-macos#net-webassembly-build-tools) is also installed.
+Note that for .NET, the [_wasm-tools_](https://learn.microsoft.com/en-us/aspnet/core/blazor/tooling?view=aspnetcore-7.0&pivots=linux-macos#net-webassembly-build-tools) and the [_wasm-experimental_ workload](https://learn.microsoft.com/en-us/aspnet/core/client-side/dotnet-interop?view=aspnetcore-7.0#prerequisites) are also installed.
 
 Don't forget that there are [online alternatives to running WABT locally](https://webassembly.github.io/wabt/demo/)!
 
@@ -317,6 +317,19 @@ cat /tmp/test.txt
 ```
 
 Read more about the above sample script [here](https://github.com/bytecodealliance/wasmtime/blob/main/docs/WASI-tutorial.md#executing-in-wasmtime-runtime).
+
+### .NET with Wasm/WASI
+
+```bash
+mkdir dotnet-wasi
+cd dotnet-wasi
+dotnet new console
+dotnet add package Wasi.Sdk --prerelease
+ls -la ./bin/Debug/net7.0/
+wasmtime ./bin/Debug/net7.0/dotnet-wasi.wasm
+```
+
+Read more [here](https://blog.jetbrains.com/dotnet/2022/12/15/the-future-of-net-with-wasm/). Note that this example uses experimental features of .NET and is _not_ ready for production!
 
 ### Blazor
 
