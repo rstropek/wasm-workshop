@@ -239,3 +239,24 @@ cat /tmp/test.txt
 
 Read more about the above sample script [here](https://github.com/bytecodealliance/wasmtime/blob/main/docs/WASI-tutorial.md#executing-in-wasmtime-runtime).
 
+### Blazor
+
+Microsoft offers [good tutorials for Blazor Wasm](https://learn.microsoft.com/en-us/aspnet/core/blazor/tutorials/build-a-blazor-app?view=aspnetcore-7.0). This image contains the necessary tools to follow the tutorials.
+
+**Notes**:
+
+* You must run Blazor apps with `dotnet run --urls http://*:8080` to make them accessible from outside of the container.
+* Blazor caches the Wasm- and DLL-files after the first load of the app. If you want to demonstrate how Blazor Wasm uses .NET DLLs in the browser, do not forget to clear the _Cache storage_ using your browser's dev tools.
+
+### Fermyon Spin
+
+#### Hello World
+
+* Create a new _Spin_ application: `spin new http-rust hello_spin`
+* Build the application: `spin build`
+* Take a look at the generated code: `ls -la target/wasm32-wasi/release/`
+* Run the app: `spin up --listen [::]:8080` (this enables accessing the app from outside of the container)
+
+#### Larger Example
+
+A larger example (Todo list) can be found [here](https://github.com/rstropek/rust-api-fxs/tree/main/todo-spin). Sample requests can be found [here](https://github.com/rstropek/rust-api-fxs/blob/main/requests.http) (you can run time with _Rest Client_, _Postman_, or another tool for issuing HTTP requests).
