@@ -1,0 +1,17 @@
+{
+    "name": "hello-wasm",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "build": "tsc && wat2wasm demo.wat",
+      "start": "npm run build && httpserver"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+      "httpserver": "^0.3.0",
+      "typescript": "^5.2.2"
+    }
+  }
+  
