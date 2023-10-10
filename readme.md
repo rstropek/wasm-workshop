@@ -215,7 +215,11 @@ Compare [Mini Rust sample](https://github.com/rstropek/AdventOfCode2022/tree/mai
 
 ### Emscripten
 
-Emscripten is a complete Open Source compiler toolchain to WebAssembly. Using Emscripten you can compile C and C++ code, or any other language that uses LLVM, into WebAssembly, and run it on the Web, Node.js, or other Wasm runtimes. Read more [here](https://emscripten.org/docs/introducing_emscripten/about_emscripten.html). The following examples uses [`cwrap`](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-ccall-cwrap).
+Emscripten is a complete Open Source compiler toolchain to WebAssembly. Using Emscripten you can compile C and C++ code, or any other language that uses LLVM, into WebAssembly, and run it on the Web, Node.js, or other Wasm runtimes. Read more [here](https://emscripten.org/docs/introducing_emscripten/about_emscripten.html).
+
+#### Using `cwrap`
+
+The following examples uses [`cwrap`](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-ccall-cwrap). `cwrap` is quite straightforward and designed to be simple. It's suitable for scenarios where you only need to call a few C functions from JavaScript. It doesn't handle C++ classes or objects. It's quite limited in terms of type support. When your needs are pretty simple, such as calling a few C functions without involving C++ objects or classes, `cwrap` is a good choice because of its simplicity and less overhead.
 
 ```bash
 mkdir emscripten
@@ -281,7 +285,234 @@ Create the file _index.html_:
 </html>
 ```
 
-Run a local web server (`http-server`) and open the page in your browser.
+Run a local web server (`http-server`) and open the page in your browser. Check the console for results.
+
+#### Using `embind`
+
+[Embind](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html) is used to bind C++ functions and classes to JavaScript, so that the compiled code can be used in a natural way by "normal" JavaScript. _embind_ is more feature-rich and complex than `cwrap`. It provides a robust framework for interacting between C++ and JavaScript. Unlike `cwrap`, _embind_ allows you to expose entire C++ classes and objects to JavaScript, not just functions. It provides a wide range of type mappings and can handle complex data types, such as classes and enums. When you need to expose more than just functions and deal with C++ objects, classes, and other complex types, _embind_ would be the preferred choice despite its additional overhead.
+
+```bash
+mkdir embind
+cd embind
+mkdir test
+cd test
+```
+
+Create the file _hello_function.cpp_ in the _test_ folder:
+
+```cpp
+#include <emscripten/bind.h>
+#include <math.h>
+#include <string>
+
+using namespace emscripten;
+
+extern "C" {
+  int int_sqrt(int x) {
+    return sqrt(x);
+  }
+
+  bool is_palindrome(const std::string& text)
+  {
+    int start = 0;
+    int end = text.length() - 1;
+    while (start < end) {
+        if (text[start] != text[end]) { 
+            return false; 
+        }
+        start++;
+        end--;
+    }
+
+    return true;
+  }
+}
+
+EMSCRIPTEN_BINDINGS(my_module) {
+    function("int_sqrt", &int_sqrt);
+    function("is_palindrome", &is_palindrome);
+}
+```
+
+```bash
+cd ..
+emcc -l embind test/hello_function.cpp -o function.js
+```
+
+Create the file _index.html_:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <script src="function.js"></script>
+  <script>
+    Module.onRuntimeInitialized = () => {
+      console.log(Module.int_sqrt(12));
+
+      text = "radar";
+      console.log(Module.is_palindrome(text));
+    }
+  </script>
+</body>
+</html>
+```
+
+Run a local web server (`http-server`) and open the page in your browser. Check the console for results.
+
+### WasmFiddle
+
+[_WasmFiddle_](https://wasdk.github.io/WasmFiddle/) is a great online tool for experimenting with Wasm. It allows you to write Wasm code in C. It also allows you to write JavaScript code that can call Wasm functions. You have log functions and you can even draw on a HTML Canvas. The tool is very useful for learning Wasm and experimenting with it.
+
+Here is an example:
+
+```c
+// Define a structure to represent a point in 2D space
+struct Point {
+    long x;  // Horizontal coordinate
+    long y;  // Vertical coordinate
+};
+
+// Define a structure to encapsulate two Point structures
+struct TwoPoints {
+    struct Point point1;  // First point in 2D space
+    struct Point point2;  // Second point in 2D space
+};
+
+// Create a global variable to hold two points
+struct TwoPoints points;
+
+// Directional variables to dictate the movement of point1
+int dir_x1 = 10;  // Horizontal direction (positive means moving right)
+int dir_y1 = 15;  // Vertical direction (positive means moving up)
+
+// Directional variables to dictate the movement of point2
+int dir_x2 = 25;  // Horizontal direction (positive means moving right)
+int dir_y2 = -5;  // Vertical direction (negative means moving down)
+
+// Function to move two points within specified width and height
+// and bounce them back when they hit the boundaries
+void move(int width, int height) {
+    // Move point1
+    // Add respective direction values to point1 coordinates
+    points.point1.x += dir_x1;
+    points.point1.y += dir_y1;
+    
+    // Move point2
+    // Add respective direction values to point2 coordinates
+    points.point2.x += dir_x2;
+    points.point2.y += dir_y2;
+    
+    // Check bounds and bounce for point1
+    // If point1 x-coordinate is out of bounds, reverse its x-direction
+    if (points.point1.x <= 0 || points.point1.x >= width) {
+        dir_x1 = -dir_x1;
+    }
+    // If point1 y-coordinate is out of bounds, reverse its y-direction
+    if (points.point1.y <= 0 || points.point1.y >= height) {
+        dir_y1 = -dir_y1;
+    }
+
+    // Check bounds and bounce for point2
+    // If point2 x-coordinate is out of bounds, reverse its x-direction
+    if (points.point2.x <= 0 || points.point2.x >= width) {
+        dir_x2 = -dir_x2;
+    }
+    // If point2 y-coordinate is out of bounds, reverse its y-direction
+    if (points.point2.y <= 0 || points.point2.y >= height) {
+        dir_y2 = -dir_y2;
+    }
+}
+
+// Function to get a pointer to the points data
+// This function could be used to access point data without exposing the actual structure
+long* getPoints() {
+  // Cast the address of `points` to a pointer to long
+  // This allows accessing x and y coordinates as an array
+  // Note: This breaks the abstraction of the point structures
+  // and would require knowledge of the structure layout to use safely.
+  return (long*)&points;
+}
+```
+
+```js
+// Initialize a WebAssembly (Wasm) module and instance
+// `wasmCode` and `wasmImports` are assumed to be defined elsewhere in your code
+var wasmModule = new WebAssembly.Module(wasmCode);
+var wasmInstance = new WebAssembly.Instance(wasmModule, wasmImports);
+
+// Acquire a reference to the memory used by the Wasm instance, and create
+// a typed array (Int32Array) to manipulate the memory in a more accessible way.
+// Note: Wasm memory is a contiguous buffer of bytes. Typed arrays allow us 
+// to interact with this buffer using JavaScript’s numeric types.
+const buffer = wasmInstance.exports.memory.buffer;
+const points = new Int32Array(buffer);
+
+// Obtain the offset into Wasm memory where point data is stored.
+// Divide by 4 because Int32Array views memory as 32-bit chunks,
+// and we want to index into them, not the individual bytes.
+let offset = wasmInstance.exports.getPoints() / 4;
+
+// Initialize the points in the Wasm memory.
+// These points will be used in the rendering logic below.
+points[offset] = 10;
+points[offset + 1] = 20;
+points[offset + 2] = 30;
+points[offset + 3] = 40;
+
+// Initialize the canvas and get its 2D rendering context
+// `lib.showCanvas()` is assumed to perform canvas-related initialization
+// and `canvas` is assumed to be available in the scope.
+lib.showCanvas();
+let ctx = canvas.getContext('2d');
+
+// Define a counter that will limit the number of animation frames to 1000.
+// It's useful to prevent an infinite animation loop.
+let counter = 1000;
+
+// Define the animation function that will be called repeatedly
+function step() {
+  // Decrease the counter by one on each frame.
+  counter--;
+
+  // Call the `move` function exported from the Wasm instance, 
+  // which updates the position of points according to canvas dimensions.
+  wasmInstance.exports.move(canvas.width, canvas.height);
+
+  // Clear the entire canvas, preparing it for the next frame of drawing.
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Begin a new path for the line to be drawn between the points.
+  ctx.beginPath();
+  
+  // Move the drawing cursor to the first point.
+  ctx.moveTo(points[offset], points[offset + 1]);
+  
+  // Draw a line from the current position (first point) to the second point.
+  ctx.lineTo(points[offset + 2], points[offset + 3]);
+  
+  // Set the style and width of the line.
+  ctx.strokeStyle = 'black';
+  ctx.lineWidth = 5;
+  
+  // Actually draw the path using the previously defined line and style.
+  ctx.stroke();
+
+  // If the counter is not yet exhausted, request the next animation frame.
+  if (counter > 0) {
+    window.requestAnimationFrame(step);
+  }
+}
+
+// Kickstart the animation by calling `step` on the next frame.
+window.requestAnimationFrame(step);
+```
 
 ### WASI
 
