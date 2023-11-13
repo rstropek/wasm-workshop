@@ -91,6 +91,8 @@ RUN apt remove nodejs npm -y \
     && apt update \
     && apt install nodejs -y \
     && npm install --global http-server
+RUN npm install --global @bytecodealliance/jco @bytecodealliance/componentize-js
+
 WORKDIR /root
 RUN git clone https://github.com/emscripten-core/emsdk.git \
     && cd emsdk \
