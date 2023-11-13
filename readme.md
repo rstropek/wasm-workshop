@@ -1,5 +1,5 @@
 ![GitHub Action Badge](https://github.com/rstropek/wasm-workshop/actions/workflows/build.yml/badge.svg)
-[![Docker Badge](https://img.shields.io/badge/Docker-rstropek%2Fwasm--workshop-blue)](https://hub.docker.com/repository/docker/rstropek/wasm-workshop/general)
+[![Docker Badge](https://img.shields.io/badge/Docker-rstropek%2Fwasm--workshop-blue)](https://hub.docker.com/r/rstropek/wasm-workshop)
 
 # Docker Image for WASM Workshop
 
@@ -7,24 +7,27 @@
 
 This is a Docker image for exercises in a WASM workshop. It puts together the following tools:
 
-| Tool                                                                     | Notes                                                          |
-| ------------------------------------------------------------------------ | -------------------------------------------------------------- |
-| [Build Essentials](https://packages.ubuntu.com/focal/build-essential)    | C Compiler, C Library, etc.                                    |
-| _wget_, _curl_, _vim_                                                    | Just some useful tools                                         |
-| [WebAssembly Binary Toolkit (WABT)](https://github.com/WebAssembly/wabt) | Contains useful tools like wat2wasm                            |
-| [Wasmtime](https://wasmtime.dev/)                                        | A runtime for WebAssembly & WASI                               |
-| [emscripten](https://emscripten.org/index.html)                          | Compiler toolchain to Wasm                                     |
-| [Rust](https://www.rust-lang.org/)                                       | Rust tools for Rust-related Wasm examples                      |
-| [Fermyon Spin](https://www.fermyon.com/spin)                             | Platform for serverless Wasm apps                              |
-| [WASI SDK](https://github.com/WebAssembly/wasi-sdk)                      | WASI-enabled WebAssembly C/C++ toolchain                       |
-| [Wasm Tools](https://github.com/bytecodealliance/wasm-tools)             | Rust tooling for low-level manipulation of WebAssembly modules |
-| [.NET](https://dot.net)                                                  | .NET SDK for building _Blazor_ apps                            |
-| [Just](https://github.com/casey/just)                                    | Useful command runner                                          |
-| [http-server](https://www.npmjs.com/package/http-server)                 | Simple static HTTP server                                      |
+| Tool                                                                     | Notes                                                             |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| [Build Essentials](https://packages.ubuntu.com/focal/build-essential)    | C Compiler, C Library, etc.                                       |
+| _wget_, _curl_, _vim_                                                    | Just some useful tools                                            |
+| [WebAssembly Binary Toolkit (WABT)](https://github.com/WebAssembly/wabt) | Contains useful tools like wat2wasm                               |
+| [Wasmtime](https://wasmtime.dev/)                                        | A runtime for WebAssembly & WASI                                  |
+| [emscripten](https://emscripten.org/index.html)                          | Compiler toolchain to Wasm                                        |
+| [Rust](https://www.rust-lang.org/)                                       | Rust tools for Rust-related Wasm examples                         |
+| [Fermyon Spin](https://www.fermyon.com/spin)                             | Platform for serverless Wasm apps                                 |
+| [WASI SDK](https://github.com/WebAssembly/wasi-sdk)                      | WASI-enabled WebAssembly C/C++ toolchain                          |
+| [Wasm Tools](https://github.com/bytecodealliance/wasm-tools)             | Rust tooling for low-level manipulation of WebAssembly modules    |
+| [WIT Bindgen](https://github.com/bytecodealliance/wit-bindgen)           | Guest language bindings generator for WIT and the Component Model |
+| [.NET](https://dot.net)                                                  | .NET SDK for building _Blazor_ apps                               |
+| [Just](https://github.com/casey/just)                                    | Useful command runner                                             |
+| [http-server](https://www.npmjs.com/package/http-server)                 | Simple static HTTP server                                         |
 
 Note that for Rust, the _wasm32-wasi_ target and [_wasm-pack_](https://rustwasm.github.io/wasm-pack/) are also installed.
 
 Note that for .NET, the [_wasm-tools_](https://learn.microsoft.com/en-us/aspnet/core/blazor/tooling?view=aspnetcore-7.0&pivots=linux-macos#net-webassembly-build-tools) and the [_wasm-experimental_ workload](https://learn.microsoft.com/en-us/aspnet/core/client-side/dotnet-interop?view=aspnetcore-7.0#prerequisites) are also installed.
+
+Note that for Wasm Tools, the languge toolings for [Rust](https://component-model.bytecodealliance.org/language-support/rust.html) and [JavaScript](https://component-model.bytecodealliance.org/language-support/javascript.html) are installed.
 
 Don't forget that there are [online alternatives to running WABT locally](https://webassembly.github.io/wabt/demo/)!
 
@@ -49,12 +52,14 @@ Don't forget that there are [online alternatives to running WABT locally](https:
 
 The Docker image accepts the following [arguments](https://docs.docker.com/engine/reference/builder/#arg):
 
-| Argument         | Default Value  |                        |
-| ---------------- | -------------- | ---------------------- |
-| `base_image`     | `ubuntu:jammy` | The base image         |
-| `wasi_sdk`       | `20`           | WASI SDK version       |
-| `dotnet_repo`    | `22.04`        | Used .NET repository   |
-| `dotnet_version` | `7.0`          | Installed .NET version |
+| Argument         | Default Value  |                              |
+| ---------------- | -------------- | ---------------------------- |
+| `base_image`     | `ubuntu:jammy` | The base image               |
+| `wasi_sdk`       | `20`           | WASI SDK version             |
+| `dotnet_repo`    | `22.04`        | Used .NET repository         |
+| `dotnet_version` | `7.0`          | Installed .NET version       |
+| `node_major`     | `20`           | Installed Node version       |
+| `wasm_tools`     | `1.0.51`       | Installed Wasm Tools version |
 
 Read more about .NET repository version [here](https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#register-the-microsoft-package-repository).
 

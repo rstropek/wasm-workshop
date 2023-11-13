@@ -55,7 +55,8 @@ RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 ENV PATH $PATH:/root/.cargo/bin
 RUN rustup target add wasm32-wasi \
     && curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-RUN cargo install --git https://github.com/bytecodealliance/cargo-component --locked cargo-component
+RUN cargo install --git https://github.com/bytecodealliance/cargo-component --locked cargo-component \
+    && cargo install --git https://github.com/bytecodealliance/wit-bindgen wit-bindgen-cli
 RUN curl -fsSL https://developer.fermyon.com/downloads/install.sh | bash \
     && mkdir /opt/spin \
     && mv spin /opt/spin/ \
