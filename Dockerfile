@@ -32,7 +32,8 @@ FROM base
 ARG wasi_sdk=20
 ARG dotnet_repo=22.04
 ARG dotnet_version=7.0
-ARG node_major=18
+ARG node_major=20
+ARG wasm_tools=1.0.51
 # Copy WABT tools
 COPY --from=wabt /app/wabt/build/wat2wasm \
     /app/wabt/build/wasm2wat \
@@ -61,6 +62,12 @@ RUN cd /opt \
     && tar xvf wasi-sdk-$wasi_sdk.0-linux.tar.gz \
     && rm wasi-sdk-$wasi_sdk.0-linux.tar.gz \
     && echo 'export PATH=$PATH:/opt/wasi-sdk-$wasi_sdk.0' >> ~/.bashrc
+RUN cd /opt \
+    && wget https://github.com/bytecodealliance/wasm-tools/releases/download/wasm-tools-$wasm_tools/wasm-tools-$wasm_tools-x86_64-linux.tar.gz \
+    && tar xvf wasm-tools-$wasm_tools-x86_64-linux.tar.gz \
+    && rm wasm-tools-$wasm_tools-x86_64-linux.tar.gz \
+    && mv ./wasm-tools-$wasm_tools-x86_64-linux/ ./wasm-tools/ \
+    && echo 'export PATH=$PATH:/opt/wasm-tools' >> ~/.bashrc
 RUN wget https://packages.microsoft.com/config/ubuntu/$dotnet_repo/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
     && dpkg -i packages-microsoft-prod.deb \
     && rm packages-microsoft-prod.deb \

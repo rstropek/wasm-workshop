@@ -7,19 +7,20 @@
 
 This is a Docker image for exercises in a WASM workshop. It puts together the following tools:
 
-| Tool                                                                     | Notes                                     |
-| ------------------------------------------------------------------------ | ----------------------------------------- |
-| [Build Essentials](https://packages.ubuntu.com/focal/build-essential)    | C Compiler, C Library, etc.               |
-| _wget_, _curl_, _vim_                                                    | Just some useful tools                    |
-| [WebAssembly Binary Toolkit (WABT)](https://github.com/WebAssembly/wabt) | Contains useful tools like wat2wasm       |
-| [Wasmtime](https://wasmtime.dev/)                                        | A runtime for WebAssembly & WASI          |
-| [emscripten](https://emscripten.org/index.html)                          | Compiler toolchain to Wasm                |
-| [Rust](https://www.rust-lang.org/)                                       | Rust tools for Rust-related Wasm examples |
-| [Fermyon Spin](https://www.fermyon.com/spin)                             | Platform for serverless Wasm apps         |
-| [WASI SDK](https://github.com/WebAssembly/wasi-sdk)                      | WASI-enabled WebAssembly C/C++ toolchain  |
-| [.NET](https://dot.net)                                                  | .NET SDK for building _Blazor_ apps       |
-| [Just](https://github.com/casey/just)                                    | Useful command runner                     |
-| [http-server](https://www.npmjs.com/package/http-server)                 | Simple static HTTP server                 |
+| Tool                                                                     | Notes                                                          |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| [Build Essentials](https://packages.ubuntu.com/focal/build-essential)    | C Compiler, C Library, etc.                                    |
+| _wget_, _curl_, _vim_                                                    | Just some useful tools                                         |
+| [WebAssembly Binary Toolkit (WABT)](https://github.com/WebAssembly/wabt) | Contains useful tools like wat2wasm                            |
+| [Wasmtime](https://wasmtime.dev/)                                        | A runtime for WebAssembly & WASI                               |
+| [emscripten](https://emscripten.org/index.html)                          | Compiler toolchain to Wasm                                     |
+| [Rust](https://www.rust-lang.org/)                                       | Rust tools for Rust-related Wasm examples                      |
+| [Fermyon Spin](https://www.fermyon.com/spin)                             | Platform for serverless Wasm apps                              |
+| [WASI SDK](https://github.com/WebAssembly/wasi-sdk)                      | WASI-enabled WebAssembly C/C++ toolchain                       |
+| [Wasm Tools](https://github.com/bytecodealliance/wasm-tools)             | Rust tooling for low-level manipulation of WebAssembly modules |
+| [.NET](https://dot.net)                                                  | .NET SDK for building _Blazor_ apps                            |
+| [Just](https://github.com/casey/just)                                    | Useful command runner                                          |
+| [http-server](https://www.npmjs.com/package/http-server)                 | Simple static HTTP server                                      |
 
 Note that for Rust, the _wasm32-wasi_ target and [_wasm-pack_](https://rustwasm.github.io/wasm-pack/) are also installed.
 
@@ -317,8 +318,8 @@ extern "C" {
     int start = 0;
     int end = text.length() - 1;
     while (start < end) {
-        if (text[start] != text[end]) { 
-            return false; 
+        if (text[start] != text[end]) {
+            return false;
         }
         start++;
         end--;
@@ -344,23 +345,22 @@ Create the file _index.html_:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  
-  <script src="function.js"></script>
-  <script>
-    Module.onRuntimeInitialized = () => {
-      console.log(Module.int_sqrt(12));
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script src="function.js"></script>
+    <script>
+      Module.onRuntimeInitialized = () => {
+        console.log(Module.int_sqrt(12));
 
-      text = "radar";
-      console.log(Module.is_palindrome(text));
-    }
-  </script>
-</body>
+        text = "radar";
+        console.log(Module.is_palindrome(text));
+      };
+    </script>
+  </body>
 </html>
 ```
 
@@ -403,12 +403,12 @@ void move(int width, int height) {
     // Add respective direction values to point1 coordinates
     points.point1.x += dir_x1;
     points.point1.y += dir_y1;
-    
+
     // Move point2
     // Add respective direction values to point2 coordinates
     points.point2.x += dir_x2;
     points.point2.y += dir_y2;
-    
+
     // Check bounds and bounce for point1
     // If point1 x-coordinate is out of bounds, reverse its x-direction
     if (points.point1.x <= 0 || points.point1.x >= width) {
@@ -449,7 +449,7 @@ var wasmInstance = new WebAssembly.Instance(wasmModule, wasmImports);
 
 // Acquire a reference to the memory used by the Wasm instance, and create
 // a typed array (Int32Array) to manipulate the memory in a more accessible way.
-// Note: Wasm memory is a contiguous buffer of bytes. Typed arrays allow us 
+// Note: Wasm memory is a contiguous buffer of bytes. Typed arrays allow us
 // to interact with this buffer using JavaScript’s numeric types.
 const buffer = wasmInstance.exports.memory.buffer;
 const points = new Int32Array(buffer);
@@ -470,37 +470,49 @@ points[offset + 3] = 40;
 // `lib.showCanvas()` is assumed to perform canvas-related initialization
 // and `canvas` is assumed to be available in the scope.
 lib.showCanvas();
-let ctx = canvas.getContext('2d');
+let ctx = canvas.getContext("2d");
+ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 // Define a counter that will limit the number of animation frames to 1000.
 // It's useful to prevent an infinite animation loop.
 let counter = 1000;
+
+function getRandomColor() {
+  // Generate random values for red, green, and blue channels.
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 256);
+  const b = Math.floor(Math.random() * 256);
+
+  // Construct and return an RGB color string.
+  return `rgb(${r},${g},${b})`;
+}
 
 // Define the animation function that will be called repeatedly
 function step() {
   // Decrease the counter by one on each frame.
   counter--;
 
-  // Call the `move` function exported from the Wasm instance, 
+  // Call the `move` function exported from the Wasm instance,
   // which updates the position of points according to canvas dimensions.
   wasmInstance.exports.move(canvas.width, canvas.height);
 
   // Clear the entire canvas, preparing it for the next frame of drawing.
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+  // Try the code with the following line and without
+  //ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   // Begin a new path for the line to be drawn between the points.
   ctx.beginPath();
-  
+
   // Move the drawing cursor to the first point.
   ctx.moveTo(points[offset], points[offset + 1]);
-  
+
   // Draw a line from the current position (first point) to the second point.
   ctx.lineTo(points[offset + 2], points[offset + 3]);
-  
+
   // Set the style and width of the line.
-  ctx.strokeStyle = 'black';
+  ctx.strokeStyle = getRandomColor();
   ctx.lineWidth = 5;
-  
+
   // Actually draw the path using the previously defined line and style.
   ctx.stroke();
 
@@ -528,6 +540,16 @@ echo hello wasm from c > test.txt
 wasmtime demo.wasm test.txt /tmp/test.txt
 wasmtime --dir=. --dir=/tmp demo.wasm test.txt /tmp/test.txt
 cat /tmp/test.txt
+```
+
+You can also limit the CPU usage of Wasm by specifying a _fuel_ limit:
+
+```bash
+# Should work, enough fuel
+wasmtime --dir=. demo.wasm --fuel 10000 hallo.txt hallo2.txt
+
+# Should not work, Wasm runs out of fuel
+wasmtime --dir=. demo.wasm --fuel 1000 hallo.txt hallo2.txt
 ```
 
 Read more about the above sample script [here](https://github.com/bytecodealliance/wasmtime/blob/main/docs/WASI-tutorial.md#executing-in-wasmtime-runtime).
