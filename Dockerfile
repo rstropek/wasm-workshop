@@ -10,7 +10,9 @@ RUN apt update \
         curl \
         vim \
         ca-certificates \
-        gnupg
+        gnupg \
+        pkg-config \
+        libssl-dev
 
 # Build WABT tools from source
 FROM base AS wabt
@@ -53,6 +55,7 @@ RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 ENV PATH $PATH:/root/.cargo/bin
 RUN rustup target add wasm32-wasi \
     && curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+RUN cargo install --git https://github.com/bytecodealliance/cargo-component --locked cargo-component
 RUN curl -fsSL https://developer.fermyon.com/downloads/install.sh | bash \
     && mkdir /opt/spin \
     && mv spin /opt/spin/ \
