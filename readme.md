@@ -598,6 +598,41 @@ Microsoft offers [good tutorials for Blazor Wasm](https://learn.microsoft.com/en
 - You must run Blazor apps with `dotnet run --urls http://*:8080` to make them accessible from outside of the container.
 - Blazor caches the Wasm- and DLL-files after the first load of the app. If you want to demonstrate how Blazor Wasm uses .NET DLLs in the browser, do not forget to clear the _Cache storage_ using your browser's dev tools.
 
+### Wasm Component Model
+
+#### WAT
+
+```wat
+(module
+  (func $add (param $lhs i32) (param $rhs i32) (result i32)
+      local.get $lhs
+      local.get $rhs
+      i32.add)
+  (export "add" (func $add))
+)
+```
+
+#### WIT
+
+```wit
+package example:component;
+
+world example {
+    export add: func(x: s32, y: s32) -> s32;
+}
+```
+
+#### Build Wasm Component
+
+```bash
+wasm-tools component embed add.wit add.wat -o add.wasm
+wasm-tools component new add.wasm -o add.component.wasm
+```
+
+#### Rust Host
+
+See [wasm-component](https://github.com/rstropek/wasm-workshop/blob/main/wasm-component)
+
 ### Fermyon Spin
 
 #### Hello World

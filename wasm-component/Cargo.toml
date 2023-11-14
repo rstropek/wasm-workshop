@@ -1,0 +1,12 @@
+[package]
+name = "example-host"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+clap = { version = "4", features = ["derive"] }
+wasmtime = { version = "14", features = ["component-model"] }
+wasmtime-wasi = "14"
+wasi-cap-std-sync = "14"
+anyhow = "1"
