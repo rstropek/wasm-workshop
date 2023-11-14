@@ -135,38 +135,41 @@ Try this code in the [online WAT editor](https://webassembly.github.io/wabt/demo
 
     ;; Defining local variables which will be used in the function.
     ;; The local.get and local.set instructions allow for manipulating them.
-    (local $i i32) ;; will hold a fibonacci number
-    (local $j i32) ;; will hold the subsequent fibonacci number
-    (local $k i32) ;; will be used as a pointer to memory where to store the numbers
+    (local $current i32) ;; will hold a fibonacci number
+    (local $next i32) ;; will hold the subsequent fibonacci number
+    (local $ptr i32) ;; will be used as a pointer to memory where to store the numbers
     (local $limit i32) ;; will define our upper bound for fibonacci calculation
+    (local $temp i32) ;; temporary variable
 
     ;; Initializing our local variables.
-    (local.set $i (i32.const 0))
-    (local.set $j (i32.const 1))
-    (local.set $k (i32.const 0))
+    (local.set $current (i32.const 0))
+    (local.set $next (i32.const 1))
+    (local.set $ptr (i32.const 0))
     (local.set $limit (i32.const 100))
 
     ;; Storing the first two Fibonacci numbers (0 and 1) in memory.
-    (i32.store (local.get $k) (local.get $i))
-    ;; Update $k to point to the next memory cell.
-    (local.set $k (i32.add (local.get $k) (i32.const 4)))
-    (i32.store (local.get $k) (local.get $j))
-    (local.set $k (i32.add (local.get $k) (i32.const 4)))
+    (i32.store (local.get $ptr) (local.get $current))
+    ;; Update $ptr to point to the next memory cell.
+    (local.set $ptr (i32.add (local.get $ptr) (i32.const 4)))
+    (i32.store (local.get $ptr) (local.get $next))
+    (local.set $ptr (i32.add (local.get $ptr) (i32.const 4)))
 
     ;; Loop that calculates Fibonacci numbers and stores them in memory.
     (loop $loop1
-      ;; Calculate the next Fibonacci number and store it in $i.
-      (local.set $i (i32.add (local.get $i) (local.get $j)))
+      ;; Store the sum of $current and $next in a temporary variable.
+      (local.set $temp (i32.add (local.get $current) (local.get $next)))
 
       ;; Check if the new Fibonacci number is less than or equal to our limit.
-      (if (i32.le_s (local.get $i) (local.get $limit))
+      (if (i32.le_s (local.get $temp) (local.get $limit))
         (then
-          ;; If yes, store it in memory.
-          (i32.store (local.get $k) (local.get $i))
-          ;; Update $k to point to the next memory cell.
-          (local.set $k (i32.add (local.get $k) (i32.const 4)))
-          ;; Update $j to hold the last computed Fibonacci number.
-          (local.set $j (local.get $i))
+          ;; If yes, update $current to the value of $next.
+          (local.set $current (local.get $next))
+          ;; Update $next to the new Fibonacci number.
+          (local.set $next (local.get $temp))
+          ;; Store the new Fibonacci number in memory.
+          (i32.store (local.get $ptr) (local.get $temp))
+          ;; Update $ptr to point to the next memory cell.
+          (local.set $ptr (i32.add (local.get $ptr) (i32.const 4)))
           ;; Continue loop from its beginning.
           (br $loop1)
         )
@@ -176,7 +179,7 @@ Try this code in the [online WAT editor](https://webassembly.github.io/wabt/demo
     ;; At the end, we return how many Fibonacci numbers have been calculated
     ;; and stored in memory by dividing the memory pointer by 4
     ;; (since WebAssembly's i32 takes up 4 bytes of memory).
-    (i32.div_u (local.get $k) (i32.const 4))
+    (i32.div_u (local.get $ptr) (i32.const 4))
   )
 
   ;; Exporting the fibonacci function so it can be called from JavaScript.
