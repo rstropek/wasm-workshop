@@ -13,6 +13,7 @@ This is a Docker image for exercises in a WASM workshop. It puts together the fo
 | _wget_, _curl_, _vim_                                                    | Just some useful tools                                            |
 | [WebAssembly Binary Toolkit (WABT)](https://github.com/WebAssembly/wabt) | Contains useful tools like wat2wasm                               |
 | [Wasmtime](https://wasmtime.dev/)                                        | A runtime for WebAssembly & WASI                                  |
+| [Wasmer](https://wasmer.io/)                                             | A runtime for WebAssembly & WASIX                                 |
 | [emscripten](https://emscripten.org/index.html)                          | Compiler toolchain to Wasm                                        |
 | [Rust](https://www.rust-lang.org/)                                       | Rust tools for Rust-related Wasm examples                         |
 | [Fermyon Spin](https://www.fermyon.com/spin)                             | Platform for serverless Wasm apps                                 |
@@ -23,9 +24,9 @@ This is a Docker image for exercises in a WASM workshop. It puts together the fo
 | [Just](https://github.com/casey/just)                                    | Useful command runner                                             |
 | [http-server](https://www.npmjs.com/package/http-server)                 | Simple static HTTP server                                         |
 
-Note that for Rust, the _wasm32-wasi_ target and [_wasm-pack_](https://rustwasm.github.io/wasm-pack/) are also installed.
+Note that for Rust, the _wasm32-wasi_ target, [_wasm-pack_](https://rustwasm.github.io/wasm-pack/), [`cargo-wasix`](https://wasix.org/docs/language-guide/rust/installation) and  are also installed.
 
-Note that for .NET, the [_wasm-tools_](https://learn.microsoft.com/en-us/aspnet/core/blazor/tooling?view=aspnetcore-7.0&pivots=linux-macos#net-webassembly-build-tools) and the [_wasm-experimental_ workload](https://learn.microsoft.com/en-us/aspnet/core/client-side/dotnet-interop?view=aspnetcore-7.0#prerequisites) are also installed.
+Note that for .NET, the [_wasm-tools_](https://learn.microsoft.com/en-us/aspnet/core/blazor/tooling?view=aspnetcore-8.0&pivots=linux-macos#net-webassembly-build-tools) and the [_wasm-experimental_ workload](https://learn.microsoft.com/en-us/aspnet/core/client-side/dotnet-interop?view=aspnetcore-8.0#prerequisites) are also installed.
 
 Note that for Wasm Tools, the languge toolings for [Rust](https://component-model.bytecodealliance.org/language-support/rust.html) and [JavaScript](https://component-model.bytecodealliance.org/language-support/javascript.html) are installed.
 
@@ -55,11 +56,11 @@ The Docker image accepts the following [arguments](https://docs.docker.com/engin
 | Argument         | Default Value  |                              |
 | ---------------- | -------------- | ---------------------------- |
 | `base_image`     | `ubuntu:jammy` | The base image               |
-| `wasi_sdk`       | `20`           | WASI SDK version             |
+| `wasi_sdk`       | `21`           | WASI SDK version             |
 | `dotnet_repo`    | `22.04`        | Used .NET repository         |
-| `dotnet_version` | `7.0`          | Installed .NET version       |
+| `dotnet_version` | `8.0`          | Installed .NET version       |
 | `node_major`     | `20`           | Installed Node version       |
-| `wasm_tools`     | `1.0.51`       | Installed Wasm Tools version |
+| `wasm_tools`     | `1.201.0`      | Installed Wasm Tools version |
 
 Read more about .NET repository version [here](https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#register-the-microsoft-package-repository).
 
@@ -371,9 +372,11 @@ Create the file _index.html_:
 
 Run a local web server (`http-server`) and open the page in your browser. Check the console for results.
 
-### WasmFiddle
+### WasmFiddle (Deprecated)
 
-[_WasmFiddle_](https://wasdk.github.io/WasmFiddle/) is a great online tool for experimenting with Wasm. It allows you to write Wasm code in C. It also allows you to write JavaScript code that can call Wasm functions. You have log functions and you can even draw on a HTML Canvas. The tool is very useful for learning Wasm and experimenting with it.
+**Unfortunately, WasmFiddle is no longer available.** The sample code is kept here just for reference.
+
+[_WasmFiddle_](https://wasdk.github.io/WasmFiddle/) **was** a great online tool for experimenting with Wasm. It allowed you to write Wasm code in C. It also allowed you to write JavaScript code that can call Wasm functions. You had log functions and you can even draw on a HTML Canvas. The tool was very useful for learning Wasm and experimenting with it.
 
 Here is an example:
 
@@ -583,15 +586,15 @@ mkdir dotnet-wasi
 cd dotnet-wasi
 dotnet new console
 dotnet add package Wasi.Sdk --prerelease
-ls -la ./bin/Debug/net7.0/
-wasmtime ./bin/Debug/net7.0/dotnet-wasi.wasm
+ls -la ./bin/Debug/net8.0/
+wasmtime ./bin/Debug/net8.0/dotnet-wasi.wasm
 ```
 
 Read more [here](https://blog.jetbrains.com/dotnet/2022/12/15/the-future-of-net-with-wasm/). Note that this example uses experimental features of .NET and is _not_ ready for production!
 
 ### Blazor
 
-Microsoft offers [good tutorials for Blazor Wasm](https://learn.microsoft.com/en-us/aspnet/core/blazor/tutorials/build-a-blazor-app?view=aspnetcore-7.0). This image contains the necessary tools to follow the tutorials.
+Microsoft offers [good tutorials for Blazor Wasm](https://learn.microsoft.com/en-us/aspnet/core/blazor/tutorials/build-a-blazor-app?view=aspnetcore-8.0). This image contains the necessary tools to follow the tutorials.
 
 **Notes**:
 

@@ -31,11 +31,11 @@ RUN apt install -y \
 
 # Build final image
 FROM base
-ARG wasi_sdk=20
+ARG wasi_sdk=21
 ARG dotnet_repo=22.04
-ARG dotnet_version=7.0
+ARG dotnet_version=8.0
 ARG node_major=20
-ARG wasm_tools=1.0.51
+ARG wasm_tools=1.201.0
 # Copy WABT tools
 COPY --from=wabt /app/wabt/build/wat2wasm \
     /app/wabt/build/wasm2wat \
@@ -51,12 +51,14 @@ COPY --from=wabt /app/wabt/build/wat2wasm \
     /opt/wabt/bin/
 RUN echo 'export PATH=$PATH:/opt/wabt/bin' >> ~/.bashrc
 RUN curl https://wasmtime.dev/install.sh -sSf | bash
+RUN curl https://get.wasmer.io -sSfL | bash
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 ENV PATH $PATH:/root/.cargo/bin
 RUN rustup target add wasm32-wasi \
     && curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 RUN cargo install --git https://github.com/bytecodealliance/cargo-component --locked cargo-component \
-    && cargo install --git https://github.com/bytecodealliance/wit-bindgen wit-bindgen-cli
+    && cargo install --git https://github.com/bytecodealliance/wit-bindgen wit-bindgen-cli \
+    && cargo install cargo-wasix
 RUN curl -fsSL https://developer.fermyon.com/downloads/install.sh | bash \
     && mkdir /opt/spin \
     && mv spin /opt/spin/ \
@@ -67,7 +69,7 @@ RUN cd /opt \
     && rm wasi-sdk-$wasi_sdk.0-linux.tar.gz \
     && echo 'export PATH=$PATH:/opt/wasi-sdk-$wasi_sdk.0' >> ~/.bashrc
 RUN cd /opt \
-    && wget https://github.com/bytecodealliance/wasm-tools/releases/download/wasm-tools-$wasm_tools/wasm-tools-$wasm_tools-x86_64-linux.tar.gz \
+    && wget https://github.com/bytecodealliance/wasm-tools/releases/download/v$wasm_tools/wasm-tools-$wasm_tools-x86_64-linux.tar.gz \
     && tar xvf wasm-tools-$wasm_tools-x86_64-linux.tar.gz \
     && rm wasm-tools-$wasm_tools-x86_64-linux.tar.gz \
     && mv ./wasm-tools-$wasm_tools-x86_64-linux/ ./wasm-tools/ \
@@ -77,8 +79,6 @@ RUN wget https://packages.microsoft.com/config/ubuntu/$dotnet_repo/packages-micr
     && rm packages-microsoft-prod.deb \
     && apt update \
     && apt install dotnet-sdk-$dotnet_version -y \
-    && cp -r /usr/share/dotnet/* /usr/lib/dotnet/ \
-    && rm -rf /usr/share/dotnet \
     && dotnet workload install wasm-tools \
     && dotnet workload install wasm-experimental \
     && apt install libxml2
