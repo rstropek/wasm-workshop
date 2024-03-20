@@ -1,11 +1,27 @@
 ![GitHub Action Badge](https://github.com/rstropek/wasm-workshop/actions/workflows/build.yml/badge.svg)
 [![Docker Badge](https://img.shields.io/badge/Docker-rstropek%2Fwasm--workshop-blue)](https://hub.docker.com/r/rstropek/wasm-workshop)
 
-# Docker Image for WASM Workshop
+# Docker Image for Wasm Workshop
+
+## Links to Learn More About Wasm Fundamentals
+
+* Basics
+  * [webassembly.org](https://webassembly.org/)
+  * [WASI](https://wasi.dev/) and [WASIX](https://wasix.org/)
+* Runtimes
+  * [Wasmtime](https://wasmtime.dev/)
+  * [Wasmer](https://wasmer.io/)
+  * [WasmEdge](https://wasmedge.org/)
+  * [Want more ;-)](https://github.com/appcypher/awesome-wasm-runtimes)
+* Application platforms outside the browser
+  * [Cloudflare Wasm Workers](https://developers.cloudflare.com/workers/runtime-apis/webassembly/)
+  * [SpinKube](https://www.spinkube.dev/)
+  * [Fermyon Spin](https://www.fermyon.com/spin)
+  * [WinterJS](https://github.com/wasmerio/winterjs)
 
 ## Image Content
 
-This is a Docker image for exercises in a WASM workshop. It puts together the following tools:
+This is a Docker image for exercises in a Wasm workshop. It puts together the following tools:
 
 | Tool                                                                     | Notes                                                             |
 | ------------------------------------------------------------------------ | ----------------------------------------------------------------- |
