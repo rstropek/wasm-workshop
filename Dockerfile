@@ -55,6 +55,7 @@ RUN curl https://get.wasmer.io -sSfL | bash
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 ENV PATH $PATH:/root/.cargo/bin
 RUN rustup target add wasm32-wasi \
+    && rustup target add wasm32-unknown-unknown \
     && curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 RUN cargo install --git https://github.com/bytecodealliance/cargo-component --locked cargo-component \
     && cargo install --git https://github.com/bytecodealliance/wit-bindgen wit-bindgen-cli \

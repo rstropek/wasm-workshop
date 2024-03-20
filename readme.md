@@ -40,7 +40,7 @@ This is a Docker image for exercises in a Wasm workshop. It puts together the fo
 | [Just](https://github.com/casey/just)                                    | Useful command runner                                             |
 | [http-server](https://www.npmjs.com/package/http-server)                 | Simple static HTTP server                                         |
 
-Note that for Rust, the _wasm32-wasi_ target, [_wasm-pack_](https://rustwasm.github.io/wasm-pack/), [`cargo-wasix`](https://wasix.org/docs/language-guide/rust/installation) and  are also installed.
+Note that for Rust, the _wasm32-wasi_ target, the _wasm32-unknown-unknown_ target, [_wasm-pack_](https://rustwasm.github.io/wasm-pack/), [`cargo-wasix`](https://wasix.org/docs/language-guide/rust/installation) and  are also installed.
 
 Note that for .NET, the [_wasm-tools_](https://learn.microsoft.com/en-us/aspnet/core/blazor/tooling?view=aspnetcore-8.0&pivots=linux-macos#net-webassembly-build-tools) and the [_wasm-experimental_ workload](https://learn.microsoft.com/en-us/aspnet/core/client-side/dotnet-interop?view=aspnetcore-8.0#prerequisites) are also installed.
 
