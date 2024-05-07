@@ -31,11 +31,11 @@ RUN apt install -y \
 
 # Build final image
 FROM base
-ARG wasi_sdk=21
+ARG wasi_sdk=22
 ARG dotnet_repo=22.04
 ARG dotnet_version=8.0
 ARG node_major=20
-ARG wasm_tools=1.201.0
+ARG wasm_tools=1.206.0
 # Copy WABT tools
 COPY --from=wabt /app/wabt/build/wat2wasm \
     /app/wabt/build/wasm2wat \

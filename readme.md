@@ -72,11 +72,11 @@ The Docker image accepts the following [arguments](https://docs.docker.com/engin
 | Argument         | Default Value  |                              |
 | ---------------- | -------------- | ---------------------------- |
 | `base_image`     | `ubuntu:jammy` | The base image               |
-| `wasi_sdk`       | `21`           | WASI SDK version             |
+| `wasi_sdk`       | `22`           | WASI SDK version             |
 | `dotnet_repo`    | `22.04`        | Used .NET repository         |
 | `dotnet_version` | `8.0`          | Installed .NET version       |
 | `node_major`     | `20`           | Installed Node version       |
-| `wasm_tools`     | `1.201.0`      | Installed Wasm Tools version |
+| `wasm_tools`     | `1.206.0`      | Installed Wasm Tools version |
 
 Read more about .NET repository version [here](https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#register-the-microsoft-package-repository).
 
