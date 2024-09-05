@@ -1,4 +1,4 @@
-ARG base_image=ubuntu:jammy
+ARG base_image=ubuntu:noble
 
 # Base image, installs various commonly used tools
 FROM $base_image AS base
@@ -31,11 +31,11 @@ RUN apt install -y \
 
 # Build final image
 FROM base
-ARG wasi_sdk=21
-ARG dotnet_repo=22.04
+ARG wasi_sdk=24
+ARG dotnet_repo=24.04
 ARG dotnet_version=8.0
 ARG node_major=20
-ARG wasm_tools=1.201.0
+ARG wasm_tools=1.216.0
 # Copy WABT tools
 COPY --from=wabt /app/wabt/build/wat2wasm \
     /app/wabt/build/wasm2wat \
@@ -53,11 +53,12 @@ RUN echo 'export PATH=$PATH:/opt/wabt/bin' >> ~/.bashrc
 RUN curl https://wasmtime.dev/install.sh -sSf | bash
 RUN curl https://get.wasmer.io -sSfL | bash
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
-ENV PATH $PATH:/root/.cargo/bin
-RUN rustup target add wasm32-wasi \
+ENV PATH=$PATH:/root/.cargo/bin
+RUN rustup target add wasm32-wasip1 \
     && rustup target add wasm32-unknown-unknown \
     && curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-RUN cargo install --git https://github.com/bytecodealliance/cargo-component --locked cargo-component \
+RUN cargo install --locked cargo-component \
+    && cargo install wac-cli \
     && cargo install --git https://github.com/bytecodealliance/wit-bindgen wit-bindgen-cli \
     && cargo install cargo-wasix
 RUN curl -fsSL https://developer.fermyon.com/downloads/install.sh | bash \
@@ -65,9 +66,9 @@ RUN curl -fsSL https://developer.fermyon.com/downloads/install.sh | bash \
     && mv spin /opt/spin/ \
     && echo 'export PATH=$PATH:/opt/spin' >> ~/.bashrc
 RUN cd /opt \
-    && wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$wasi_sdk/wasi-sdk-$wasi_sdk.0-linux.tar.gz \
-    && tar xvf wasi-sdk-$wasi_sdk.0-linux.tar.gz \
-    && rm wasi-sdk-$wasi_sdk.0-linux.tar.gz \
+    && wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$wasi_sdk/wasi-sdk-$wasi_sdk.0-x86_64-linux.tar.gz \
+    && tar xvf wasi-sdk-$wasi_sdk.0-x86_64-linux.tar.gz \
+    && rm wasi-sdk-$wasi_sdk.0-x86_64-linux.tar.gz \
     && echo 'export PATH=$PATH:/opt/wasi-sdk-$wasi_sdk.0' >> ~/.bashrc
 RUN cd /opt \
     && wget https://github.com/bytecodealliance/wasm-tools/releases/download/v$wasm_tools/wasm-tools-$wasm_tools-x86_64-linux.tar.gz \
@@ -103,4 +104,4 @@ RUN git clone https://github.com/emscripten-core/emsdk.git \
     && echo 'export PATH=$PATH:/root/emsdk:/root/emsdk/upstream/emscripten' >> ~/.bashrc \
     && echo 'export EMSDK=/root/emsdk' >> ~/.bashrc \
     && echo 'export EMSDK_NODE=/root/emsdk/node/16.20.0_64bit/bin/node' >> ~/.bashrc
-ENV CCWASM /opt/wasi-sdk-$wasi_sdk.0/bin/clang --sysroot=/opt/wasi-sdk-$wasi_sdk.0/share/wasi-sysroot
+ENV CCWASM=/opt/wasi-sdk-$wasi_sdk.0/bin/clang --sysroot=/opt/wasi-sdk-$wasi_sdk.0/share/wasi-sysroot

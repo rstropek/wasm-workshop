@@ -8,6 +8,7 @@
 * Basics
   * [webassembly.org](https://webassembly.org/)
   * [WASI](https://wasi.dev/) and [WASIX](https://wasix.org/)
+  * [WASI GitHub repo](https://github.com/WebAssembly/WASI/tree/main)
 * Runtimes
   * [Wasmtime](https://wasmtime.dev/)
   * [Wasmer](https://wasmer.io/)
@@ -40,7 +41,7 @@ This is a Docker image for exercises in a Wasm workshop. It puts together the fo
 | [Just](https://github.com/casey/just)                                    | Useful command runner                                             |
 | [http-server](https://www.npmjs.com/package/http-server)                 | Simple static HTTP server                                         |
 
-Note that for Rust, the _wasm32-wasi_ target, the _wasm32-unknown-unknown_ target, [_wasm-pack_](https://rustwasm.github.io/wasm-pack/), [`cargo-wasix`](https://wasix.org/docs/language-guide/rust/installation) and  are also installed.
+Note that for Rust, the _wasm32-wasip1_ target, the _wasm32-unknown-unknown_ target, [_wasm-pack_](https://rustwasm.github.io/wasm-pack/), [`cargo-wasix`](https://wasix.org/docs/language-guide/rust/installation), [WASM Composition Tooling (WAC)](https://github.com/bytecodealliance/wac), and [`cargo component`](https://github.com/bytecodealliance/cargo-component) are also installed.
 
 Note that for .NET, the [_wasm-tools_](https://learn.microsoft.com/en-us/aspnet/core/blazor/tooling?view=aspnetcore-8.0&pivots=linux-macos#net-webassembly-build-tools) and the [_wasm-experimental_ workload](https://learn.microsoft.com/en-us/aspnet/core/client-side/dotnet-interop?view=aspnetcore-8.0#prerequisites) are also installed.
 
@@ -71,16 +72,18 @@ The Docker image accepts the following [arguments](https://docs.docker.com/engin
 
 | Argument         | Default Value  |                              |
 | ---------------- | -------------- | ---------------------------- |
-| `base_image`     | `ubuntu:jammy` | The base image               |
-| `wasi_sdk`       | `21`           | WASI SDK version             |
-| `dotnet_repo`    | `22.04`        | Used .NET repository         |
+| `base_image`     | `ubuntu:noble` | The base image               |
+| `wasi_sdk`       | `24`           | WASI SDK version             |
+| `dotnet_repo`    | `24.04`        | Used .NET repository         |
 | `dotnet_version` | `8.0`          | Installed .NET version       |
 | `node_major`     | `20`           | Installed Node version       |
-| `wasm_tools`     | `1.201.0`      | Installed Wasm Tools version |
+| `wasm_tools`     | `1.216.0`      | Installed Wasm Tools version |
 
 Read more about .NET repository version [here](https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#register-the-microsoft-package-repository).
 
 ## Exercises
+
+**Note:** Not all of these exercises have been checked for the newest versions of the tools. Please let me know if you find any issues.
 
 ### Hello World Wasm
 

@@ -5,9 +5,10 @@
       "ms-vscode.cpptools-extension-pack",
       "ms-dotnettools.csharp",
       "rust-lang.rust-analyzer",
-      "serayuzgur.crates",
+      "fill-labs.dependi",
       "usernamehw.errorlens",
-      "ms-vscode.hexeditor"
+      "ms-vscode.hexeditor",
+      "BytecodeAlliance.wit-idl",
+      "tamasfe.even-better-toml"
     ]
-  
   }
