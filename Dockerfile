@@ -61,10 +61,10 @@ RUN cargo install --locked cargo-component \
     && cargo install wac-cli \
     && cargo install --git https://github.com/bytecodealliance/wit-bindgen wit-bindgen-cli \
     && cargo install cargo-wasix
-RUN curl -fsSL https://developer.fermyon.com/downloads/install.sh | bash \
-    && mkdir /opt/spin \
-    && mv spin /opt/spin/ \
-    && echo 'export PATH=$PATH:/opt/spin' >> ~/.bashrc
+# RUN curl -fsSL https://developer.fermyon.com/downloads/install.sh | bash \
+#     && mkdir /opt/spin \
+#     && mv spin /opt/spin/ \
+#     && echo 'export PATH=$PATH:/opt/spin' >> ~/.bashrc
 RUN cd /opt \
     && wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$wasi_sdk/wasi-sdk-$wasi_sdk.0-x86_64-linux.tar.gz \
     && tar xvf wasi-sdk-$wasi_sdk.0-x86_64-linux.tar.gz \

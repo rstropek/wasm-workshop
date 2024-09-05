@@ -33,7 +33,7 @@ This is a Docker image for exercises in a Wasm workshop. It puts together the fo
 | [Wasmer](https://wasmer.io/)                                             | A runtime for WebAssembly & WASIX                                 |
 | [emscripten](https://emscripten.org/index.html)                          | Compiler toolchain to Wasm                                        |
 | [Rust](https://www.rust-lang.org/)                                       | Rust tools for Rust-related Wasm examples                         |
-| [Fermyon Spin](https://www.fermyon.com/spin)                             | Platform for serverless Wasm apps                                 |
+| [Fermyon Spin](https://www.fermyon.com/spin)*                            | Platform for serverless Wasm apps                                 |
 | [WASI SDK](https://github.com/WebAssembly/wasi-sdk)                      | WASI-enabled WebAssembly C/C++ toolchain                          |
 | [Wasm Tools](https://github.com/bytecodealliance/wasm-tools)             | Rust tooling for low-level manipulation of WebAssembly modules    |
 | [WIT Bindgen](https://github.com/bytecodealliance/wit-bindgen)           | Guest language bindings generator for WIT and the Component Model |
@@ -48,6 +48,8 @@ Note that for .NET, the [_wasm-tools_](https://learn.microsoft.com/en-us/aspnet/
 Note that for Wasm Tools, the languge toolings for [Rust](https://component-model.bytecodealliance.org/language-support/rust.html) and [JavaScript](https://component-model.bytecodealliance.org/language-support/javascript.html) are installed.
 
 Don't forget that there are [online alternatives to running WABT locally](https://webassembly.github.io/wabt/demo/)!
+
+*) Spin is currently disabled because of problems with running the installier in GitHub Actions.
 
 **NOTE:** See the [GitHub Repository](https://github.com/rstropek/wasm-workshop/) for lots of sample code to be used in the workshop.
 
